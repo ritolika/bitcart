@@ -28,11 +28,11 @@ async def get_or_create_shopify_invoice(store_id: str, order_id: str, amount: De
         if invoice.status in invoices_module.PAID_STATUSES:
             paid_invoice = invoice
     if not store.plugin_settings.shopify.shop_name:
-        raise HTTPException(404, "Not found")
+        raise HTTPException(404, "Not found 0")
     client = shopify_ext.get_shopify_client(store)
     order = await client.get_order(order_id)
     if "id" not in order:
-        raise HTTPException(404, "Not found")
+        raise HTTPException(404, "Not found 1")
     if paid_invoice is not None:
         # fix registering after reboot
         if order["financial_status"] == "pending":
@@ -43,7 +43,7 @@ async def get_or_create_shopify_invoice(store_id: str, order_id: str, amount: De
     if check_only:
         return {}
     if order["financial_status"] not in ["pending", "partially_paid"]:
-        raise HTTPException(404, "Not found")
+        raise HTTPException(404, "Not found 2")
     final_price = amount if amount < Decimal(order["total_outstanding"]) else Decimal(order["total_outstanding"])
     invoice = await crud.invoices.create_invoice(
         schemes.CreateInvoice(
